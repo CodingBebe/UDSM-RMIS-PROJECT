@@ -1,17 +1,20 @@
-//import { Toaster } from "@/components/ui/toaster";
-//import { Toaster as Sonner } from "@/components/ui/sonner";
-//import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/auth/Login";
+
 
 // Risk Champion Pages
 //import ChampionDashboard from "./pages/champion/Dashboard";
 //import SubmitRisk from "./pages/champion/SubmitRisk";
 
 // Risk Coordinator Pages
-//import CoordinatorDashboard from "./pages/coordinator/Dashboard";
+import CoordinatorLayout from "@/components/layout/CoordinatorLayout";
+import Dashboard from "@/pages/riskCoordinator/Dashboard";
+import RegisterRisk from "@/pages/riskCoordinator/RegisterRisk";
 
 // Committee Pages
 //import CommitteeDashboard from "./pages/committee/Dashboard";
@@ -26,9 +29,9 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    {/*<TooltipProvider>
+    <TooltipProvider>
       <Toaster />
-      <Sonner />*/}
+      <Sonner />
       <BrowserRouter>
         <Routes>
            <Route path="/" element={<Login />} />
@@ -38,8 +41,10 @@ const App = () => (
           <Route path="/champion/submit-risk" element={<SubmitRisk />} />*/}
           
           {/* Risk Coordinator Routes */}
-           {/*<Route path="/coordinator/dashboard" element={<CoordinatorDashboard />} />*/}
-          
+          <Route path="/coordinator" element={<CoordinatorLayout/>}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="register-risk" element={<RegisterRisk />} />
+          </Route>
           {/* Committee Routes */}
            {/*<Route path="/committee/dashboard" element={<CommitteeDashboard />} />*/}
           
@@ -50,7 +55,7 @@ const App = () => (
            {/*<Route path="*" element={<NotFound />} /> */}
         </Routes>
       </BrowserRouter>
-   {/* </TooltipProvider>*/}
+   </TooltipProvider>
   </QueryClientProvider>
 );
 

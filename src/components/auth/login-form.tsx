@@ -22,7 +22,7 @@ const LoginForm = () => {
     setTimeout(() => {
       setIsLoading(false);
       
-      // Determine user role and redirect to appropriate dashboard
+      // Hii part inaidi ifanywe backend kucheck the credentials provided ana role gani na permission gani then redirect to respective dashboard, also mtu asiweze kutype path pale juu bila kulogin
       if (email.includes("champion")) {
         navigate("/champion/dashboard");
       } else if (email.includes("coordinator")) {
