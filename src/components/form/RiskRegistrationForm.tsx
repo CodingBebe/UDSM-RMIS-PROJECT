@@ -54,7 +54,7 @@ const RiskRegistrationForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-const handleSupportingOwnerChange = (e) => {
+  const handleSupportingOwnerChange = (e) => {
     const { value, checked } = e.target;
     setFormData((prev) => {
       const newOwners = checked
@@ -69,15 +69,15 @@ const handleSupportingOwnerChange = (e) => {
     setIsSubmitting(true);
 
     setTimeout(() => {
-  setIsSubmitting(false);
-  toast({
-    title: "Risk Registered",
-    description: "The risk has been successfully registered.",
-  });
-  setTimeout(() => {
-    navigate("/admin/dashboard");
-  }, 1500); // Wait 1.5 seconds before navigating
-}, 1000);
+      setIsSubmitting(false);
+      toast({
+        title: "Risk Registered",
+        description: "The risk has been successfully registered.",
+      });
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 1500); // Wait 1.5 seconds before navigating
+    }, 1000);
   };
 
   const nextTab = () => {
@@ -90,54 +90,79 @@ const handleSupportingOwnerChange = (e) => {
     else if (activeTab === "assessment") setActiveTab("details");
   };
 
-const supportingOwnerOptions = [
-  { value: "DHRMA", label: "DHRMA" },
-  { value: "DSS", label: "DSS" },
-  { value: "UH", label: "UH" },
-  { value: "DPGS", label: "DPGS" },
-  { value: "DUS", label: "DUS" },
-  { value: "DES", label: "DES" },
-  { value: "Principals", label: "Principals" },
-  { value: "Deans", label: "Deans" },
-  { value: "Directors", label: "Directors" },
-  { value: "DRP", label: "DRP" },
-  { value: "DPS", label: "DPS" },
-  { value: "IPMO", label: "IPMO" },
-  { value: "DIEN", label: "DIEN" },
-  { value: "TDTC", label: "TDTC" },
-  { value: "DSS/Commandant Auxiliary Police", label: "DSS/Commandant Auxiliary Police" },
-  { value: "DoSS", label: "DoSS" },
-  { value: "SoAF", label: "SoAF" },
-  { value: "CoNAS", label: "CoNAS" },
-  { value: "CoET", label: "CoET" },
-  { value: "Auxiliary Police", label: "Auxiliary Police" },
-  { value: "DICT", label: "DICT" },
-  { value: "DLS", label: "DLS" },
-  { value: "PMU", label: "PMU" },
-  { value: "QAU", label: "QAU" },
-  { value: "DoF", label: "DoF" },
-  { value: "CCC & STC", label: "CCC & STC" },
-  { value: "DPDI", label: "DPDI" },
-  { value: "DICA", label: "DICA" },
-  { value: "CMU", label: "CMU" },
-];
+  const supportingOwnerOptions = [
+    { value: "DHRMA", label: "DHRMA" },
+    { value: "DSS", label: "DSS" },
+    { value: "UH", label: "UH" },
+    { value: "DPGS", label: "DPGS" },
+    { value: "DUS", label: "DUS" },
+    { value: "DES", label: "DES" },
+    { value: "Principals", label: "Principals" },
+    { value: "Deans", label: "Deans" },
+    { value: "Directors", label: "Directors" },
+    { value: "DRP", label: "DRP" },
+    { value: "DPS", label: "DPS" },
+    { value: "IPMO", label: "IPMO" },
+    { value: "DIEN", label: "DIEN" },
+    { value: "TDTC", label: "TDTC" },
+    { value: "DSS/Commandant Auxiliary Police", label: "DSS/Commandant Auxiliary Police" },
+    { value: "DoSS", label: "DoSS" },
+    { value: "SoAF", label: "SoAF" },
+    { value: "CoNAS", label: "CoNAS" },
+    { value: "CoET", label: "CoET" },
+    { value: "Auxiliary Police", label: "Auxiliary Police" },
+    { value: "DICT", label: "DICT" },
+    { value: "DLS", label: "DLS" },
+    { value: "PMU", label: "PMU" },
+    { value: "QAU", label: "QAU" },
+    { value: "DoF", label: "DoF" },
+    { value: "CCC & STC", label: "CCC & STC" },
+    { value: "DPDI", label: "DPDI" },
+    { value: "DICA", label: "DICA" },
+    { value: "CMU", label: "CMU" },
+  ];
 
 
 
-// Calculate rating automatically
-const calculateRating = () => {
-  const impact = parseInt(formData.impact || "0");
-  const likelihood = parseInt(formData.likelihood || "0");
-  return impact * likelihood;
-};
+  // Calculate rating automatically
+  const calculateRating = () => {
+    const impact = parseInt(formData.impact || "0");
+    const likelihood = parseInt(formData.likelihood || "0");
+    return impact * likelihood;
+  };
 
-const getRatingLevel = (rating: number) => {
-  if (rating >= 20) return { level: "Very High", color: "text-red-600 bg-red-50" };
-  if (rating >= 15) return { level: "High", color: "text-orange-600 bg-orange-50" };
-  if (rating >= 10) return { level: "Moderate", color: "text-yellow-600 bg-yellow-50" };
-  if (rating >= 1) return { level: "Low", color: "text-green-600 bg-green-50" };
-  return { level: "Not Calculated", color: "text-gray-500 bg-gray-50" };
-};
+  const getRatingLevel = (likelihood: number, impact: number) => {
+    const pair = [likelihood, impact];
+
+    const low = [
+      [4, 1], [3, 1], [2, 1], [2, 2],
+      [1, 1], [1, 2], [1, 3], [1, 4],
+    ];
+
+    const moderate = [
+      [5, 1], [4, 2], [3, 2], [3, 3],
+      [2, 3], [2, 4], [1, 5],
+    ];
+
+    const high = [
+      [5, 2], [4, 3], [3, 4], [2, 5],
+    ];
+
+    const veryHigh = [
+      [5, 3], [5, 4], [5, 5],
+      [4, 4], [4, 5], [3, 5],
+    ];
+
+    const isMatch = (list: number[][]) =>
+      list.some(([l, i]) => l === likelihood && i === impact);
+
+    if (isMatch(veryHigh)) return { level: "Very High", color: "text-red-600 bg-red-50" };
+    if (isMatch(high)) return { level: "High", color: "text-orange-600 bg-orange-50" };
+    if (isMatch(moderate)) return { level: "Moderate", color: "text-yellow-600 bg-yellow-50" };
+    if (isMatch(low)) return { level: "Low", color: "text-green-600 bg-green-50" };
+
+    return { level: "Not Calculated", color: "text-gray-500 bg-gray-50" };
+  };
 
 
 
@@ -196,7 +221,7 @@ const getRatingLevel = (rating: number) => {
                 />
               </div>
 
-                       <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="principalOwner">Principal Risk Owner</Label>
                 <Select
                   value={formData.principalOwner}
@@ -214,26 +239,26 @@ const getRatingLevel = (rating: number) => {
                 </Select>
               </div>
 
- 
 
-<div className="space-y-2">
-  <Label>Supporting Risk Owner(s)</Label>
-  <ReactSelect
-    isMulti
-    name="supportingOwners"
-    options={supportingOwnerOptions}
-    className="basic-multi-select"
-    classNamePrefix="select"
-    placeholder="Select the supporting risk owner(s)"
-    value={supportingOwnerOptions.filter(option => formData.supportingOwners.includes(option.value))}
-    onChange={(selected) =>
-      setFormData((prev) => ({
-        ...prev,
-        supportingOwners: selected ? selected.map((opt) => opt.value) : [],
-      }))
-    }
-  />
-</div>
+
+              <div className="space-y-2">
+                <Label>Supporting Risk Owner(s)</Label>
+                <ReactSelect
+                  isMulti
+                  name="supportingOwners"
+                  options={supportingOwnerOptions}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  placeholder="Select the supporting risk owner(s)"
+                  value={supportingOwnerOptions.filter(option => formData.supportingOwners.includes(option.value))}
+                  onChange={(selected) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      supportingOwners: selected ? selected.map((opt) => opt.value) : [],
+                    }))
+                  }
+                />
+              </div>
 
 
               <div className="space-y-2">
@@ -271,7 +296,7 @@ const getRatingLevel = (rating: number) => {
                     onValueChange={(value) => handleSelectChange("likelihood", value)}
                   >
                     <SelectTrigger id="likelihood">
-                      <SelectValue placeholder="Inherent likelihood" className="text-muted-foreground"/>
+                      <SelectValue placeholder="Inherent likelihood" className="text-muted-foreground" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1">1 - Very Low</SelectItem>
@@ -290,10 +315,10 @@ const getRatingLevel = (rating: number) => {
                     onValueChange={(value) => handleSelectChange("impact", value)}
                   >
                     <SelectTrigger id="impact">
-                      <SelectValue placeholder="Inherent impact" className="text-muted-foreground"/>
+                      <SelectValue placeholder="Inherent impact" className="text-muted-foreground" />
                     </SelectTrigger>
                     <SelectContent>
-                       <SelectItem value="1">1 - Very Low</SelectItem>
+                      <SelectItem value="1">1 - Very Low</SelectItem>
                       <SelectItem value="2">2 - Low</SelectItem>
                       <SelectItem value="3">3 - Moderate</SelectItem>
                       <SelectItem value="4">4 - High</SelectItem>
@@ -302,32 +327,35 @@ const getRatingLevel = (rating: number) => {
                   </Select>
                 </div>
               </div>
-
-              <div className="space-y-2">
+<div className="space-y-2">
   <Label htmlFor="rating">Risk Rating</Label>
   <div className="flex items-center space-x-3">
     <div className="flex-1">
       <div className="px-3 py-2 border border-input rounded-md bg-muted">
         <span className="text-sm text-muted-foreground">
-          {formData.impact && formData.likelihood 
-            ? `${formData.impact} × ${formData.likelihood} = ${calculateRating()}`
-            : "Select impact and likelihood to calculate"
-          }
+          {formData.impact && formData.likelihood
+            ? `${formData.likelihood} × ${formData.impact} = ${parseInt(formData.likelihood) * parseInt(formData.impact)}`
+            : "Select impact and likelihood to calculate"}
         </span>
       </div>
     </div>
-    {calculateRating() > 0 && (
-      <div className={`px-3 py-1 rounded-full text-xs font-medium ${getRatingLevel(calculateRating()).color}`}>
-        {getRatingLevel(calculateRating()).level}
-      </div>
-    )}
-  </div>
-  {calculateRating() > 0 && (
-    <div className="text-xs text-muted-foreground">
-      Rating Scale: 1-9 (Low) • 10-14 (Medium) • 15-19 (High) • 20-25 (Critical)
-    </div>
-  )}
-</div>
+
+
+                  {formData.impact && formData.likelihood && (
+                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${getRatingLevel(parseInt(formData.likelihood), parseInt(formData.impact)).color
+                      }`}>
+                      {getRatingLevel(parseInt(formData.likelihood), parseInt(formData.impact)).level}
+                    </div>
+                  )}
+                </div>
+
+                {formData.impact && formData.likelihood && (
+                  <div className="text-xs text-muted-foreground">
+Rating Scale: Low (1-4) • Moderate (5-9) • High (10-12) • Very High (15-25) — based on (likelihood * impact) combinations
+                  </div>
+                )}
+              </div>
+
 
               <Separator />
 
