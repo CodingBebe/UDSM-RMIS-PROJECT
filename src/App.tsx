@@ -15,6 +15,7 @@ import Login from "./pages/auth/Login";
 import CoordinatorLayout from "@/components/layout/CoordinatorLayout";
 import Dashboard from "@/pages/riskCoordinator/Dashboard";
 import RegisterRisk from "@/pages/riskCoordinator/RegisterRisk";
+import RiskChampions from "@/pages/riskCoordinator/RiskChampions";
 
 // Committee Pages
 //import CommitteeDashboard from "./pages/committee/Dashboard";
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/coordinator" element={<CoordinatorLayout/>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="register-risk" element={<RegisterRisk />} />
+          <Route path="risk-champions" element={<RiskChampions />} />
           </Route>
           {/* Committee Routes */}
            {/*<Route path="/committee/dashboard" element={<CommitteeDashboard />} />*/}
