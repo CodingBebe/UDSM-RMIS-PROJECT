@@ -9,6 +9,7 @@ const CoordinatorLayout = () => {
         <nav className="flex flex-col space-y-2">
           <Link to="/coordinator/dashboard" className="hover:underline">Dashboard</Link>
           <Link to="/coordinator/register-risk" className="hover:underline">Register Risk</Link>
+          <Link to="/coordinator/risk-champions" className="hover:underline">Risk Champions</Link>
         </nav>
       </aside>
 
