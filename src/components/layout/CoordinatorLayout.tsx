@@ -10,6 +10,8 @@ const CoordinatorLayout = () => {
           <Link to="/coordinator/dashboard" className="hover:underline">Dashboard</Link>
           <Link to="/coordinator/register-risk" className="hover:underline">Register Risk</Link>
           <Link to="/coordinator/risk-champions" className="hover:underline">Risk Champions</Link>
+          <Link to="/coordinator/generate-reports" className="hover:underline">Generate Reports</Link>
+          <Link to="/coordinator/notifications" className="hover:underline">Notifications</Link>
         </nav>
       </aside>
 

@@ -16,9 +16,15 @@ import CoordinatorLayout from "@/components/layout/CoordinatorLayout";
 import Dashboard from "@/pages/riskCoordinator/Dashboard";
 import RegisterRisk from "@/pages/riskCoordinator/RegisterRisk";
 import RiskChampions from "@/pages/riskCoordinator/RiskChampions";
+import GenerateReportsPage from "@/pages/riskCoordinator/GenerateReportsPage";
+import Notifications from "@/pages/riskCoordinator/Notifications";
 
 // Committee Pages
-//import CommitteeDashboard from "./pages/committee/Dashboard";
+import CommitteeLayout from "@/components/layout/CommitteeLayout";
+import CommitteeDashboard from "@/pages/riskCommittee/Dashboard";
+import RiskHeatmap from "@/pages/riskCommittee/RiskHeatmap";
+import MitigationProgress from "@/pages/riskCommittee/MitigationProgress";
+import TrendAnalysis from "@/pages/riskCommittee/TrendAnalysis";
 
 // DVC Pages
 //import DVCDashboard from "./pages/dvc/Dashboard";
@@ -46,9 +52,16 @@ const App = () => (
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="register-risk" element={<RegisterRisk />} />
           <Route path="risk-champions" element={<RiskChampions />} />
+          <Route path="generate-reports" element={<GenerateReportsPage />} />
+          <Route path="notifications" element={<Notifications />} />
           </Route>
           {/* Committee Routes */}
-           {/*<Route path="/committee/dashboard" element={<CommitteeDashboard />} />*/}
+          <Route path="/committee" element={<CommitteeLayout />}>
+            <Route path="dashboard" element={<CommitteeDashboard />} />
+            <Route path="risk-heatmap" element={<RiskHeatmap />} />
+            <Route path="mitigation-progress" element={<MitigationProgress />} />
+            <Route path="trend-analysis" element={<TrendAnalysis />} />
+          </Route>
           
           {/* DVC Routes */}
            {/*<Route path="/dvc/dashboard" element={<DVCDashboard />} />*/}

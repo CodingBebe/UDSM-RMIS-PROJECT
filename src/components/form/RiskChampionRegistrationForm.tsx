@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const departments = [
+const units = [
  "DHRMA", "DSS", "UH",
  "DPGS", "DUS", "DES", "Principals",
  "Deans",  "Directors",
@@ -24,7 +24,7 @@ const RiskChampionRegistrationForm = ({ onRegister }) => {
     firstName: "",
     lastName: "",
     email: "",
-    department: "",
+    unit: "",
     phone: "",
   });
 
@@ -35,7 +35,7 @@ const RiskChampionRegistrationForm = ({ onRegister }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onRegister(form);
-    setForm({ firstName: "", lastName: "", email: "", department: "", phone: "" });
+    setForm({ firstName: "", lastName: "", email: "", unit: "", phone: "" });
   };
 
   return (
@@ -60,17 +60,17 @@ const RiskChampionRegistrationForm = ({ onRegister }) => {
         />
       </div>
       <div>
-        <Label>Department</Label>
+        <Label>Unit</Label>
         <select
-          name="department"
-          value={form.department}
+          name="unit"
+          value={form.unit}
           onChange={handleChange}
           required
           className="w-full border rounded px-3 py-2"
         >
-          <option value="">Select department</option>
-          {departments.map((dept) => (
-            <option key={dept} value={dept}>{dept}</option>
+          <option value="">Select unit</option>
+          {units.map((unit) => (
+            <option key={unit} value={unit}>{unit}</option>
           ))}
         </select>
       </div>
