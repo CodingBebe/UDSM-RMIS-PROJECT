@@ -1,20 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@/contexts/UserContext";
 
 export default function Profile() {
-  // Mock user data - replace with actual user data from your auth system
-  const user = {
-    name: "John Doe",
-    email: "john.doe@udsm.ac.tz",
-    role: "Risk Champion",
-    department: "ICT Department",
-    phone: "+255 123 456 789",
-    employeeId: "EMP123456",
-    joinedDate: "January 2023",
-    avatarUrl: null,
-    reportsSubmitted: 24,
-    activeRisks: 5,
-  };
+  const { user } = useUser();
 
   return (
     <div className="space-y-6">
@@ -27,8 +16,8 @@ export default function Profile() {
             <div className="flex justify-center mb-4">
               <Avatar className="h-24 w-24">
                 <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
-                <AvatarFallback className="text-2xl">
-                  {user.name.split(" ").map((n) => n[0]).join("")}
+                <AvatarFallback className="text-2xl bg-blue-900/50 text-white">
+                  {user.initials}
                 </AvatarFallback>
               </Avatar>
             </div>

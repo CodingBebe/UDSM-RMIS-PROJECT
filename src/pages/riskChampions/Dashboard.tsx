@@ -8,12 +8,22 @@ import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
 import { Badge } from "@/components/ui/badge"
+import { DashboardHeader } from "@/components/DashboardHeader"
+import udsmLogo from "@/assets/images/udsm-logo.jpg"
 
 interface DashboardStats {
   totalSubmissions: number;
   pendingReviews: number;
   approvedSubmissions: number;
   rejectedSubmissions: number;
+}
+
+interface Submission {
+  id: string;
+  title: string;
+  quarter: string;
+  status: string;
+  year?: number;
 }
 
 interface Notification {
@@ -27,10 +37,10 @@ interface Notification {
 }
 
 const mockTrendData = [
-  { quarter: 'Q1 2024', low: 12, moderate: 8, high: 4, veryHigh: 2, total: 26 },
-  { quarter: 'Q2 2024', low: 10, moderate: 7, high: 5, veryHigh: 3, total: 25 },
-  { quarter: 'Q3 2024', low: 11, moderate: 9, high: 4, veryHigh: 2, total: 26 },
-  { quarter: 'Q4 2024', low: 13, moderate: 8, high: 3, veryHigh: 2, total: 26 },
+  { quarter: 'Q1 2025', low: 12, moderate: 8, high: 4, veryHigh: 2, total: 26 },
+  { quarter: 'Q2 2025', low: 10, moderate: 7, high: 5, veryHigh: 3, total: 25 },
+  { quarter: 'Q3 2025', low: 11, moderate: 9, high: 4, veryHigh: 2, total: 26 },
+  { quarter: 'Q4 2025', low: 13, moderate: 8, high: 3, veryHigh: 2, total: 26 },
 ];
 
 export default function RiskChampionDashboard() {
@@ -52,19 +62,19 @@ export default function RiskChampionDashboard() {
       {
         id: "1",
         title: "IT Infrastructure Risk Assessment",
-        quarter: "Q1 2024",
+        quarter: "Q1 2025",
         status: "draft"
       },
       {
         id: "2",
         title: "Budget Allocation Risk Report",
-        quarter: "Q1 2024",
+        quarter: "Q1 2025",
         status: "submitted"
       },
       {
         id: "3",
         title: "Staff Training Gap Analysis",
-        quarter: "Q4 2023",
+        quarter: "Q4 2025",
         status: "approved"
       }
     ];
@@ -88,7 +98,7 @@ export default function RiskChampionDashboard() {
       {
         id: "1",
         title: "Quarterly Report Due",
-        message: "The Q2 2024 risk report is due in 5 days. Please submit on time.",
+        message: "The Q2 2025 risk report is due in 5 days. Please submit on time.",
         time: "3 hours ago",
         type: "deadline",
         isRead: false,
@@ -301,60 +311,46 @@ export default function RiskChampionDashboard() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold mb-6">Risk Champion Dashboard</h1>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Stats Cards */}
-        <Card className="bg-white shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Active Risks</p>
-                <h2 className="text-3xl font-bold">12</h2>
-                <p className="text-sm text-muted-foreground">2 require attention</p>
-              </div>
-              <AlertTriangle className="text-yellow-500" />
-            </div>
+    <div className="p-6">
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Submissions</CardTitle>
+            <FileCheck className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalSubmissions}</div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Submitted Reports</p>
-                <h2 className="text-3xl font-bold">8</h2>
-                <p className="text-sm text-muted-foreground">Last: Q1 2024</p>
-              </div>
-              <FileCheck className="text-blue-500" />
-            </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Reviews</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.pendingReviews}</div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Implemented Controls</p>
-                <h2 className="text-3xl font-bold">75%</h2>
-                <p className="text-sm text-green-600">+5%</p>
-              </div>
-              <CheckCircle2 className="text-green-500" />
-            </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Approved Submissions</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.approvedSubmissions}</div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Next Due Date</p>
-                <h2 className="text-3xl font-bold">June 30, 2024</h2>
-                <p className="text-sm text-muted-foreground">Q2 Report</p>
-              </div>
-              <Clock className="text-gray-500" />
-            </div>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Rejected Submissions</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.rejectedSubmissions}</div>
           </CardContent>
         </Card>
       </div>

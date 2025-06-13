@@ -64,10 +64,10 @@ export default function RegisterRisk() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="department">Department</Label>
+                <Label htmlFor="department">Supporting Owner</Label>
                 <Select required>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select department" />
+                    <SelectValue placeholder="Select supporting owner" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="science">Faculty of Science</SelectItem>

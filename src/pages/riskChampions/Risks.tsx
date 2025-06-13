@@ -23,44 +23,114 @@ import { Plus, FileText, Eye } from "lucide-react";
 // Mock data for demonstration
 const mockRisks = [
   {
-    id: 1,
-    title: "Healthcare Equipment Failure",
-    category: "Strategic",
-    department: "Faculty of Science",
+    id: "A1",
+    title: "Possibility of inadequate healthcare to University community members living with HIV/AIDS and Non-Communicable Diseases",
+    category: "Health Safety and Welfare",
+    supportingOwner: "Planning, Finance and Administration",
     status: "Open",
     rating: 25,
     severity: "High",
-    lastUpdated: "2024-01-25",
+    lastUpdated: "2025-01-25",
   },
   {
-    id: 2,
-    title: "IT System Failure",
-    category: "IT",
-    department: "College of Information and Communication Technology",
+    id: "B1",
+    title: "Risk of non-compliance with National Anti-Corruption Requirements",
+    category: "Compliance",
+    supportingOwner: "Planning, Finance and Administration",
+    status: "Open",
+    rating: 20,
+    severity: "Medium",
+    lastUpdated: "2025-01-20",
+  },
+  {
+    id: "B2",
+    title: "Possibility of non-compliance to public service code of ethics and conduct",
+    category: "Compliance",
+    supportingOwner: "Planning, Finance and Administration",
+    status: "Managing",
+    rating: 18,
+    severity: "Medium",
+    lastUpdated: "2025-01-18",
+  },
+  {
+    id: "C1",
+    title: "Possibility of failure to sustainably run a standing scholarship programme.",
+    category: "Academic",
+    supportingOwner: "Deputy Vice Chancellor - Academic",
+    status: "Open",
+    rating: 22,
+    severity: "High",
+    lastUpdated: "2025-01-15",
+  },
+  {
+    id: "C2",
+    title: "Possibility of inadequate competences of university graduates",
+    category: "Compliance",
+    supportingOwner: "Planning, Finance and Administration",
+    status: "Managing",
+    rating: 17,
+    severity: "Medium",
+    lastUpdated: "2025-01-10",
+  },
+  {
+    id: "C3",
+    title: "Possibility of weak innovation and entrepreneurship skills to undergraduate students",
+    category: "Innovation",
+    supportingOwner: "Deputy Vice Chancellor - Academic",
+    status: "Open",
+    rating: 19,
+    severity: "Medium",
+    lastUpdated: "2025-01-08",
+  },
+  {
+    id: "C4",
+    title: "Possibility of inadequate examination processes",
+    category: "Academic",
+    supportingOwner: "Deputy Vice Chancellor – Academic",
+    status: "Managing",
+    rating: 16,
+    severity: "Medium",
+    lastUpdated: "2025-01-05",
+  },
+  {
+    id: "D1",
+    title: "Possibility of inadequate number and quality of research output",
+    category: "Research & Consultancy",
+    supportingOwner: "Deputy Vice Chancellor - Research",
+    status: "Open",
+    rating: 21,
+    severity: "High",
+    lastUpdated: "2025-01-03",
+  },
+  {
+    id: "D2",
+    title: "Possibility of attracting insufficient number of and amount of funds from consultancy projects",
+    category: "Research & Consultancy",
+    supportingOwner: "Deputy Vice Chancellor – Research",
     status: "Managing",
     rating: 15,
     severity: "Medium",
-    lastUpdated: "2024-01-25",
+    lastUpdated: "2025-01-02",
   },
   {
-    id: 3,
-    title: "Laboratory Safety Compliance",
-    category: "Health & Safety",
-    department: "Faculty of Science",
-    status: "Managing",
-    rating: 8,
-    severity: "Medium",
-    lastUpdated: "2024-01-25",
-  },
-  {
-    id: 4,
-    title: "Student Payment Delays",
-    category: "Financial",
-    department: "Faculty of Education",
+    id: "D3",
+    title: "Possibility of failure to harness technological development",
+    category: "Research & Consultancy",
+    supportingOwner: "Deputy Vice Chancellor – Research",
     status: "Open",
-    rating: 5,
+    rating: 18,
     severity: "Medium",
-    lastUpdated: "2024-01-25",
+    lastUpdated: "2025-01-01",
+  },
+  {
+    id: "D4",
+    title: "Possibility of inadequate quality of UDSM journals",
+    category: "Research & Consultancy",
+    supportingOwner: "Deputy Vice Chancellor - Research",
+    status: "Managing",
+    rating: 14,
+    severity: "Medium",
+    lastUpdated: "2024-12-30",
   },
 ];
 
@@ -74,7 +144,7 @@ export default function Risks() {
     return mockRisks.filter((risk) => {
       const matchesSearch = 
         risk.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        risk.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        risk.supportingOwner.toLowerCase().includes(searchQuery.toLowerCase()) ||
         risk.category.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory = 
@@ -126,9 +196,10 @@ export default function Risks() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Title</TableHead>
+            <TableHead>Risk Id</TableHead>
+            <TableHead>Risk Title</TableHead>
             <TableHead>Category</TableHead>
-            <TableHead>Department</TableHead>
+            <TableHead>Supporting Owner</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Rating</TableHead>
             <TableHead>Severity</TableHead>
@@ -139,37 +210,20 @@ export default function Risks() {
         <TableBody>
           {filteredRisks.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
                 No risks found matching your search criteria
               </TableCell>
             </TableRow>
           ) : (
             filteredRisks.map((risk) => (
               <TableRow key={risk.id}>
-                <TableCell className="font-medium">{risk.title}</TableCell>
+                <TableCell className="font-medium">{risk.id}</TableCell>
+                <TableCell>{risk.title}</TableCell>
                 <TableCell>{risk.category}</TableCell>
-                <TableCell>{risk.department}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={risk.status === "Open" ? "destructive" : "warning"}
-                  >
-                    {risk.status}
-                  </Badge>
-                </TableCell>
+                <TableCell>{risk.supportingOwner}</TableCell>
+                <TableCell>{risk.status}</TableCell>
                 <TableCell>{risk.rating}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      risk.severity === "High"
-                        ? "destructive"
-                        : risk.severity === "Medium"
-                        ? "warning"
-                        : "default"
-                    }
-                  >
-                    {risk.severity}
-                  </Badge>
-                </TableCell>
+                <TableCell>{risk.severity}</TableCell>
                 <TableCell>{risk.lastUpdated}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">

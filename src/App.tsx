@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { UserProvider } from "@/contexts/UserContext";
 
 import Login from "./pages/auth/Login";
 
@@ -36,40 +37,42 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <BrowserRouter>
-        <Routes>
-           <Route path="/" element={<Login />} />
-          
-          {/* Risk Champion Routes */}
-          <Route path="/champion" element={<RiskChampionLayout />}>
-            <Route path="dashboard" element={<RiskChampionDashboard />} />
-            <Route path="risks" element={<Risks />} />
-            <Route path="risks/:id" element={<ViewRisk />} />
-            <Route path="risks/:id/report" element={<SubmitRiskReport />} />
-            <Route path="register-risk" element={<ChampionRegisterRisk />} />
-            <Route path="submissions" element={<MySubmissions />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="account" element={<Account />} />
-          </Route>
-          
-          {/* Risk Coordinator Routes */}
-          <Route path="/coordinator" element={<CoordinatorLayout/>}>
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="register-risk" element={<CoordinatorRegisterRisk />} />
-            <Route path="risk-champions" element={<RiskChampions />} />
-          </Route>
-          {/* Committee Routes */}
-           {/*<Route path="/committee/dashboard" element={<CommitteeDashboard />} />*/}
-          
-          {/* DVC Routes */}
-           {/*<Route path="/dvc/dashboard" element={<DVCDashboard />} />*/}
-          
-          {/* Catch-all */}
-           {/*<Route path="*" element={<NotFound />} /> */}
-        </Routes>
-      </BrowserRouter>
-   </TooltipProvider>
+      <UserProvider>
+        <Toaster />
+        <BrowserRouter>
+          <Routes>
+             <Route path="/" element={<Login />} />
+            
+            {/* Risk Champion Routes */}
+            <Route path="/champion" element={<RiskChampionLayout />}>
+              <Route path="dashboard" element={<RiskChampionDashboard />} />
+              <Route path="risks" element={<Risks />} />
+              <Route path="risks/:id" element={<ViewRisk />} />
+              <Route path="risks/:id/report" element={<SubmitRiskReport />} />
+              <Route path="register-risk" element={<ChampionRegisterRisk />} />
+              <Route path="submissions" element={<MySubmissions />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="account" element={<Account />} />
+            </Route>
+            
+            {/* Risk Coordinator Routes */}
+            <Route path="/coordinator" element={<CoordinatorLayout/>}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="register-risk" element={<CoordinatorRegisterRisk />} />
+              <Route path="risk-champions" element={<RiskChampions />} />
+            </Route>
+            {/* Committee Routes */}
+             {/*<Route path="/committee/dashboard" element={<CommitteeDashboard />} />*/}
+            
+            {/* DVC Routes */}
+             {/*<Route path="/dvc/dashboard" element={<DVCDashboard />} />*/}
+            
+            {/* Catch-all */}
+             {/*<Route path="*" element={<NotFound />} /> */}
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 

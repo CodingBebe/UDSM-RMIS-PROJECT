@@ -5,18 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@/contexts/UserContext";
 
 export default function Account() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-
-  // Mock user data - replace with actual user data from your auth system
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@udsm.ac.tz",
-    phone: "+255 763 456 789",
-    avatarUrl: null,
-  });
+  const { user, updateUser } = useUser();
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +58,10 @@ export default function Account() {
     }
   };
 
+  const handleInputChange = (field: string, value: string) => {
+    updateUser({ [field]: value });
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Account Settings</h1>
@@ -82,7 +80,7 @@ export default function Account() {
               <div className="flex items-center space-x-4">
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
-                  <AvatarFallback>{user.name.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
+                  <AvatarFallback className="text-2xl bg-blue-900/50 text-white">{user.initials}</AvatarFallback>
                 </Avatar>
                 <Button variant="outline" size="sm">
                   Change Photo
@@ -94,7 +92,7 @@ export default function Account() {
                 <Input
                   id="name"
                   value={user.name}
-                  onChange={(e) => setUser({ ...user, name: e.target.value })}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
                 />
               </div>
 
@@ -104,7 +102,7 @@ export default function Account() {
                   id="email"
                   type="email"
                   value={user.email}
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
                 />
               </div>
 
@@ -113,7 +111,16 @@ export default function Account() {
                 <Input
                   id="phone"
                   value={user.phone}
-                  onChange={(e) => setUser({ ...user, phone: e.target.value })}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="department">Department</Label>
+                <Input
+                  id="department"
+                  value={user.department}
+                  disabled
                 />
               </div>
 

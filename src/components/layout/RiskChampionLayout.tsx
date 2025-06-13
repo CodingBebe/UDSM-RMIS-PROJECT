@@ -11,6 +11,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { NotificationsMenu } from "@/components/NotificationsMenu";
+import udsmLogo from "@/assets/images/udsm-logo.jpg";
+import { useUser } from "@/contexts/UserContext";
+
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  type: "deadline" | "submission" | "review" | "reminder";
+  isRead: boolean;
+  color: "blue" | "green" | "yellow" | "red";
+}
 
 const navigation = [
   {
@@ -34,18 +48,51 @@ export default function RiskChampionLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useUser();
 
-  // Mock user data - replace with actual user data from your auth system
-  const user = {
-    name: "John Doe",
-    email: "john.doe@udsm.ac.tz",
-    role: "Risk Champion",
-    department: "ICT Department",
-    avatarUrl: null, // Add actual avatar URL if available
+  // Add notifications state
+  const [notifications, setNotifications] = useState<Notification[]>([
+    {
+      id: "1",
+      title: "Quarterly Report Due",
+      message: "The Q2 2025 risk report is due in 5 days. Please submit on time.",
+      time: "3 hours ago",
+      type: "deadline",
+      isRead: false,
+      color: "blue"
+    },
+    {
+      id: "2",
+      title: "Risk Submission Reviewed",
+      message: "Your submission about 'IT system security vulnerabilities' has been reviewed by the coordinator.",
+      time: "Yesterday",
+      type: "review",
+      isRead: false,
+      color: "green"
+    }
+  ]);
+
+  const handleMarkAsRead = (id: string) => {
+    setNotifications(prev =>
+      prev.map(notification =>
+        notification.id === id ? { ...notification, isRead: true } : notification
+      )
+    );
+  };
+
+  const handleMarkAllAsRead = () => {
+    setNotifications(prev =>
+      prev.map(notification => ({ ...notification, isRead: true }))
+    );
+  };
+
+  const handleRemoveNotification = (id: string) => {
+    setNotifications(prev =>
+      prev.filter(notification => notification.id !== id)
+    );
   };
 
   const handleLogout = () => {
-    // Add your logout logic here
     toast({
       title: "Logging out...",
       description: "You will be redirected to the login page.",
@@ -66,13 +113,39 @@ export default function RiskChampionLayout() {
       {/* Sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-[#1A365D] px-6 pb-4">
-          <div className="flex h-16 shrink-0 items-center">
-            <img
-              className="h-8 w-auto"
-              src="/udsm-logo.png"
-              alt="UDSM Logo"
-            />
+          {/* Profile Section */}
+          <div className="flex flex-col items-center py-6 border-b border-blue-800/30">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="cursor-pointer flex flex-col items-center">
+                  <Avatar className="h-16 w-16 mb-2">
+                    <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
+                    <AvatarFallback className="text-lg bg-blue-900/50 text-white">{user.initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="text-center">
+                    <h2 className="text-lg font-semibold text-white leading-tight">{user.name}</h2>
+                    <p className="text-sm text-gray-300 mt-0.5">{user.role}</p>
+                  </div>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="center">
+                <DropdownMenuItem onClick={handleViewProfile}>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile Details</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleManageAccount}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Manage Account</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
+
           <nav className="flex flex-1 flex-col">
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
@@ -115,40 +188,23 @@ export default function RiskChampionLayout() {
       <div className="lg:pl-72 w-full">
         {/* Top navigation bar */}
         <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-          <div className="flex flex-1 justify-end gap-x-4 self-stretch lg:gap-x-6">
-            {/* Profile dropdown */}
+          <div className="flex flex-1 justify-between items-center">
+            <div className="flex items-center gap-4">
+              <img
+                className="h-10 w-auto"
+                src={udsmLogo}
+                alt="UDSM Logo"
+              />
+              <h1 className="text-2xl font-bold">Risk Management Dashboard</h1>
+            </div>
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
-                      <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <div className="flex flex-col space-y-1 p-2">
-                    <p className="text-sm font-medium leading-none">{user.name}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user.department}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleViewProfile}>
-                    <User className="mr-2 h-4 w-4" />
-                    View Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleManageAccount}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Manage Account
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {/* Notifications */}
+              <NotificationsMenu
+                notifications={notifications}
+                onMarkAsRead={handleMarkAsRead}
+                onMarkAllAsRead={handleMarkAllAsRead}
+                onRemoveNotification={handleRemoveNotification}
+              />
             </div>
           </div>
         </div>
