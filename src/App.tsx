@@ -3,6 +3,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { UserProvider } from "@/contexts/UserContext";
+import { Sonner } from "sonner";
+import { type PropsWithChildren } from "react";
 
 import Login from "./pages/auth/Login";
 
@@ -22,9 +24,15 @@ import CoordinatorLayout from "@/components/layout/CoordinatorLayout";
 import Dashboard from "@/pages/riskCoordinator/Dashboard";
 import CoordinatorRegisterRisk from "@/pages/riskCoordinator/RegisterRisk";
 import RiskChampions from "@/pages/riskCoordinator/RiskChampions";
+import GenerateReportsPage from "@/pages/riskCoordinator/GenerateReportsPage";
+import Notifications from "@/pages/riskCoordinator/Notifications";
 
 // Committee Pages
-//import CommitteeDashboard from "./pages/committee/Dashboard";
+import CommitteeLayout from "@/components/layout/CommitteeLayout";
+import CommitteeDashboard from "@/pages/riskCommittee/Dashboard";
+import RiskHeatmap from "@/pages/riskCommittee/RiskHeatmap";
+import MitigationProgress from "@/pages/riskCommittee/MitigationProgress";
+import TrendAnalysis from "@/pages/riskCommittee/TrendAnalysis";
 
 // DVC Pages
 //import DVCDashboard from "./pages/dvc/Dashboard";
@@ -39,9 +47,10 @@ const App = () => (
     <TooltipProvider>
       <UserProvider>
         <Toaster />
+        <Sonner />
         <BrowserRouter>
           <Routes>
-             <Route path="/" element={<Login />} />
+            <Route path="/" element={<Login />} />
             
             {/* Risk Champion Routes */}
             <Route path="/champion" element={<RiskChampionLayout />}>
@@ -56,19 +65,27 @@ const App = () => (
             </Route>
             
             {/* Risk Coordinator Routes */}
-            <Route path="/coordinator" element={<CoordinatorLayout/>}>
+            <Route path="/coordinator" element={<CoordinatorLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="register-risk" element={<CoordinatorRegisterRisk />} />
               <Route path="risk-champions" element={<RiskChampions />} />
+              <Route path="generate-reports" element={<GenerateReportsPage />} />
+              <Route path="notifications" element={<Notifications />} />
             </Route>
+
             {/* Committee Routes */}
-             {/*<Route path="/committee/dashboard" element={<CommitteeDashboard />} />*/}
+            <Route path="/committee" element={<CommitteeLayout />}>
+              <Route path="dashboard" element={<CommitteeDashboard />} />
+              <Route path="risk-heatmap" element={<RiskHeatmap />} />
+              <Route path="mitigation-progress" element={<MitigationProgress />} />
+              <Route path="trend-analysis" element={<TrendAnalysis />} />
+            </Route>
             
             {/* DVC Routes */}
-             {/*<Route path="/dvc/dashboard" element={<DVCDashboard />} />*/}
+            {/*<Route path="/dvc/dashboard" element={<DVCDashboard />} />*/}
             
             {/* Catch-all */}
-             {/*<Route path="*" element={<NotFound />} /> */}
+            {/*<Route path="*" element={<NotFound />} /> */}
           </Routes>
         </BrowserRouter>
       </UserProvider>
