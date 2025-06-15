@@ -14,32 +14,52 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    // Mock authentication for demo
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Hii part inaidi ifanywe backend kucheck the credentials provided ana role gani na permission gani then redirect to respective dashboard, also mtu asiweze kutype path pale juu bila kulogin
-      if (email.includes("champion")) {
-        navigate("/champion/dashboard");
-      } else if (email.includes("coordinator")) {
-        navigate("/coordinator/dashboard");
-      } else if (email.includes("committee")) {
-        navigate("/committee/dashboard");
-      } else if (email.includes("dvc")) {
-        navigate("/dvc/dashboard");
-      } else {
-        toast({
-          title: "Login Failed",
-          description: "Please check your credentials and try again.",
-          variant: "destructive",
-        });
-      }
-    }, 1000);
-  };
+  const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  try {
+    const response = await fetch("http://localhost:3000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+      //credentials: "include", // if you use cookies/sessions
+    });
+const data = await response.json();
+
+   if (response.ok) {
+  // Assuming your backend returns { role: "coordinator", ... }
+  if (data.role === "risk_coordinator") {
+    navigate("/coordinator/dashboard");
+  } else if (data.role === "risk_champion") {
+    navigate("/champion/dashboard");
+  } else if (data.role === "steering_committee") {
+    navigate("/committee/dashboard");
+    } else if (data.role === "deputy_vice_chancellor") {
+    navigate("/dvc/dashboard");
+    } else if (data.role === "vice_chancellor") {
+    navigate("/vc/dashboard");
+    } else {
+    navigate("/dashboard");
+  }
+}else {
+      toast({
+        title: "Login Failed",
+        description: data.message || "Please check your credentials and try again.",
+        variant: "destructive",
+      });
+    }
+  } catch (error) {
+    toast({
+      title: "Login Failed",
+      description: "Network error. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+     }
+};
+
 
   return (
     <Card className="w-[350px] shadow-lg">
