@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import RiskRegistrationForm from "@/components/form/RiskRegistrationForm";
+import RiskDetailsModal from "@/components/modals/RiskDetailsModal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 const CATEGORIES = [
   "All Categories",
@@ -36,9 +38,55 @@ const RegisterRiskPage = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [status, setStatus] = useState(STATUSES[0]);
+  const [selectedRisk, setSelectedRisk] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [risks, setRisks] = useState([
+    {
+      id: "RISK-2024-001",
+      title: "Insufficient IT Infrastructure for Online Learning",
+      owner: "Dr. Sarah Johnson",
+      category: "ICT",
+      description: "The current IT infrastructure may not be sufficient to support the increasing demand for online learning platforms, particularly during peak usage periods. This could lead to system slowdowns, connection issues, and potential service disruptions affecting both students and faculty.",
+      department: "DICT",
+      status: "Open",
+      rating: 7,
+      severity: "High",
+      lastUpdated: "2024-03-15",
+      impact: "High impact on academic delivery and student experience. Could affect thousands of students and faculty members, potentially disrupting academic activities and damaging institutional reputation.",
+      likelihood: "Medium probability of occurrence, particularly during examination periods and peak registration times.",
+      controls: "Current controls include basic load balancing and server monitoring. Regular maintenance is performed, but the system lacks redundancy and advanced scaling capabilities.",
+      mitigation: "1. Upgrade server infrastructure with cloud-based solutions\n2. Implement advanced load balancing\n3. Establish redundancy systems\n4. Regular capacity planning and monitoring\n5. Develop contingency plans for system failures"
+    }
+  ]);
 
-  // Placeholder for risks from backend
-  const filteredRisks = [];
+  const handleViewRisk = (risk) => {
+    setSelectedRisk(risk);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRisk(null);
+  };
+
+  const handleSaveRisk = (updatedRisk) => {
+    setRisks(prevRisks => 
+      prevRisks.map(risk => 
+        risk.id === updatedRisk.id ? updatedRisk : risk
+      )
+    );
+    toast.success("Risk updated successfully");
+    handleCloseModal();
+  };
+
+  const filteredRisks = risks.filter(risk => {
+    const matchesSearch = risk.title.toLowerCase().includes(search.toLowerCase()) ||
+                         risk.id.toLowerCase().includes(search.toLowerCase()) ||
+                         risk.owner.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = category === "All Categories" || risk.category === category;
+    const matchesStatus = status === "All Statuses" || risk.status === status;
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
 
   if (showForm) {
     return (
@@ -83,40 +131,45 @@ const RegisterRiskPage = () => {
         <table className="min-w-full text-sm">
           <thead>
             <tr className="bg-muted text-left">
-              <th className="py-3 px-4 font-semibold">Title</th>
+              <th className="py-3 px-4 font-semibold">Risk ID</th>
+              <th className="py-3 px-4 font-semibold">Risk Title</th>
+              <th className="py-3 px-4 font-semibold">Risk Owner</th>
               <th className="py-3 px-4 font-semibold">Category</th>
-              <th className="py-3 px-4 font-semibold">Department</th>
-              <th className="py-3 px-4 font-semibold">Status</th>
-              <th className="py-3 px-4 font-semibold">Rating</th>
-              <th className="py-3 px-4 font-semibold">Severity</th>
-              <th className="py-3 px-4 font-semibold">Last Updated</th>
               <th className="py-3 px-4 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredRisks.length === 0 ? (
-              <tr><td colSpan={8} className="text-center py-6">No risks found.</td></tr>
+              <tr><td colSpan={5} className="text-center py-6">No risks found.</td></tr>
             ) : (
               filteredRisks.map((risk, idx) => (
                 <tr key={idx} className="border-b hover:bg-muted/50">
-                  <td className="py-3 px-4 font-medium">{risk.title}</td>
+                  <td className="py-3 px-4 font-medium">{risk.id}</td>
+                  <td className="py-3 px-4">{risk.title}</td>
+                  <td className="py-3 px-4">{risk.owner}</td>
                   <td className="py-3 px-4">{risk.category}</td>
-                  <td className="py-3 px-4">{risk.department}</td>
                   <td className="py-3 px-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusStyles[risk.status] || "bg-gray-100 text-gray-800"}`}>{risk.status}</span>
+                    <Button 
+                      variant="ghost" 
+                      className="text-primary hover:text-primary/80"
+                      onClick={() => handleViewRisk(risk)}
+                    >
+                      View
+                    </Button>
                   </td>
-                  <td className="py-3 px-4">{risk.rating}</td>
-                  <td className="py-3 px-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${severityStyles[risk.severity] || "bg-gray-100 text-gray-800"}`}>{risk.severity}</span>
-                  </td>
-                  <td className="py-3 px-4">{risk.lastUpdated}</td>
-                  <td className="py-3 px-4 text-primary font-semibold cursor-pointer hover:underline">View</td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </Card>
+
+      <RiskDetailsModal 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        risk={selectedRisk}
+        onSave={handleSaveRisk}
+      />
     </div>
   );
 };
