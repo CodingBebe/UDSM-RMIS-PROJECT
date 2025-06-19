@@ -3,8 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { UserProvider } from "@/contexts/UserContext";
-import { Sonner } from "sonner";
-import { type PropsWithChildren } from "react";
+import { Toaster as Sonner } from "sonner";
 
 import Login from "./pages/auth/Login";
 
@@ -44,7 +43,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    <TooltipProvider delayDuration={0}>
       <UserProvider>
         <Toaster />
         <Sonner />
