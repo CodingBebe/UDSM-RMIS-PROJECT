@@ -1,20 +1,26 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { UserProvider } from "@/contexts/UserContext";
 
 import Login from "./pages/auth/Login";
 
-
 // Risk Champion Pages
-//import ChampionDashboard from "./pages/champion/Dashboard";
-//import SubmitRisk from "./pages/champion/SubmitRisk";
+import RiskChampionLayout from "@/components/layout/RiskChampionLayout";
+import RiskChampionDashboard from "@/pages/riskChampions/Dashboard";
+import Risks from "@/pages/riskChampions/Risks";
+import ChampionRegisterRisk from "@/pages/riskChampions/RegisterRisk";
+import ViewRisk from "@/pages/riskChampions/ViewRisk";
+import SubmitRiskReport from "@/pages/riskChampions/SubmitRiskReport";
+import MySubmissions from "@/pages/riskChampions/MySubmissions";
+import Profile from "@/pages/riskChampions/Profile";
+import Account from "@/pages/riskChampions/Account";
 
 // Risk Coordinator Pages
 import CoordinatorLayout from "@/components/layout/CoordinatorLayout";
 import Dashboard from "@/pages/riskCoordinator/Dashboard";
-import RegisterRisk from "@/pages/riskCoordinator/RegisterRisk";
+import CoordinatorRegisterRisk from "@/pages/riskCoordinator/RegisterRisk";
 import RiskChampions from "@/pages/riskCoordinator/RiskChampions";
 import GenerateReportsPage from "@/pages/riskCoordinator/GenerateReportsPage";
 import Notifications from "@/pages/riskCoordinator/Notifications";
@@ -36,7 +42,6 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
-      <Sonner />
       <BrowserRouter>
         <Routes>
            <Route path="/" element={<Login />} />
@@ -48,7 +53,6 @@ const App = () => (
           {/* Risk Coordinator Routes */}
           <Route path="/coordinator" element={<CoordinatorLayout/>}>
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="register-risk" element={<RegisterRisk />} />
           <Route path="risk-champions" element={<RiskChampions />} />
           <Route path="generate-reports" element={<GenerateReportsPage />} />
           <Route path="notifications" element={<Notifications />} />
