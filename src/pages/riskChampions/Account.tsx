@@ -1,168 +1,208 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/contexts/UserContext";
+import { useState } from "react";
 
-export default function Account() {
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+const Account = () => {
   const { user, updateUser } = useUser();
+  const { toast } = useToast();
+  
+  // Profile states
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: user?.name || "",
+    email: user?.email || "",
+    department: user?.department || "",
+    phone: user?.phone || "",
+  });
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  // Password states
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleProfileChange = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Add your profile update logic here
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+    
+    // Basic validation
+    if (!profileData.name || !profileData.email || !profileData.department) {
       toast({
-        title: "Profile Updated",
-        description: "Your profile has been updated successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
         variant: "destructive",
+        title: "Error",
+        description: "Please fill in all required fields",
       });
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    // Update user profile
+    updateUser({
+      ...user,
+      ...profileData,
+    });
+
+    toast({
+      title: "Success",
+      description: "Profile updated successfully",
+    });
+
+    setIsEditing(false);
   };
 
-  const handleUpdatePassword = async (e: React.FormEvent) => {
+  const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      // Add your password update logic here
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+    // Basic validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
       toast({
-        title: "Password Updated",
-        description: "Your password has been updated successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update password. Please try again.",
         variant: "destructive",
+        title: "Error",
+        description: "Please fill in all fields",
       });
-    } finally {
-      setIsLoading(false);
+      return;
     }
-  };
 
-  const handleInputChange = (field: string, value: string) => {
-    updateUser({ [field]: value });
+    if (newPassword !== confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "New passwords do not match",
+      });
+      return;
+    }
+
+    // TODO: Implement password change logic
+    toast({
+      title: "Success",
+      description: "Password changed successfully",
+    });
+
+    // Clear form
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Account Settings</h1>
+    <div className="container mx-auto py-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold tracking-tight">Account Settings</h2>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Profile Settings */}
+      <div className="grid gap-6">
         <Card>
-          <CardHeader>
-            <CardTitle>Profile Settings</CardTitle>
-            <CardDescription>
-              Update your personal information
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <div>
+              <CardTitle>Profile Information</CardTitle>
+              <CardDescription>Manage your account details</CardDescription>
+            </div>
+            <Button
+              variant={isEditing ? "ghost" : "secondary"}
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Cancel" : "Edit Profile"}
+            </Button>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleUpdateProfile} className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={user.avatarUrl || ""} alt={user.name} />
-                  <AvatarFallback className="text-2xl bg-blue-900/50 text-white">{user.initials}</AvatarFallback>
-                </Avatar>
-                <Button variant="outline" size="sm">
-                  Change Photo
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+            <form onSubmit={handleProfileChange} className="space-y-4">
+              <div className="grid gap-2">
+                <Label>Full Name</Label>
                 <Input
-                  id="name"
-                  value={user.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  value={profileData.name}
+                  disabled={!isEditing}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, name: e.target.value })
+                  }
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+              <div className="grid gap-2">
+                <Label>Email</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  value={user.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  value={profileData.email}
+                  disabled={!isEditing}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, email: e.target.value })
+                  }
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+              <div className="grid gap-2">
+                <Label>Role</Label>
+                <Input value={user?.role} disabled />
+              </div>
+              <div className="grid gap-2">
+                <Label>Department</Label>
                 <Input
-                  id="phone"
-                  value={user.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  value={profileData.department}
+                  disabled={!isEditing}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, department: e.target.value })
+                  }
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="department">Department</Label>
+              <div className="grid gap-2">
+                <Label>Phone Number</Label>
                 <Input
-                  id="department"
-                  value={user.department}
-                  disabled
+                  value={profileData.phone}
+                  disabled={!isEditing}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, phone: e.target.value })
+                  }
                 />
               </div>
-
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Update Profile"}
-              </Button>
+              {isEditing && (
+                <div className="flex justify-end space-x-2">
+                  <Button type="submit" className="w-full sm:w-auto">
+                    Save Changes
+                  </Button>
+                </div>
+              )}
             </form>
           </CardContent>
         </Card>
 
-        {/* Password Settings */}
         <Card>
           <CardHeader>
             <CardTitle>Change Password</CardTitle>
-            <CardDescription>
-              Update your password to keep your account secure
-            </CardDescription>
+            <CardDescription>Update your account password</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleUpdatePassword} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
-                <Input id="current-password" type="password" />
+            <form onSubmit={handlePasswordChange} className="space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="current">Current Password</Label>
+                <Input
+                  id="current"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
-                <Input id="new-password" type="password" />
+              <div className="grid gap-2">
+                <Label htmlFor="new">New Password</Label>
+                <Input
+                  id="new"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm New Password</Label>
-                <Input id="confirm-password" type="password" />
+              <div className="grid gap-2">
+                <Label htmlFor="confirm">Confirm New Password</Label>
+                <Input
+                  id="confirm"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
               </div>
-
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Change Password"}
-              </Button>
+              <Button type="submit" className="w-full sm:w-auto">Update Password</Button>
             </form>
           </CardContent>
         </Card>
       </div>
     </div>
   );
-} 
+};
+
+export default Account; 
