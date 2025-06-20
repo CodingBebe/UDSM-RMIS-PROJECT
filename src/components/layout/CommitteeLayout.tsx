@@ -9,8 +9,6 @@ const CommitteeLayout = () => {
         <nav className="flex flex-col space-y-2">
           <Link to="/committee/dashboard" className="hover:underline">Dashboard</Link>
           <Link to="/committee/risk-heatmap" className="hover:underline">Risk Heatmap</Link>
-          <Link to="/committee/mitigation-progress" className="hover:underline">Mitigation Progress</Link>
-          <Link to="/committee/trend-analysis" className="hover:underline">Trend Analysis</Link>
           {/* Add more links as needed */}
         </nav>
       </aside>
