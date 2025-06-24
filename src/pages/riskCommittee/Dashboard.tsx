@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -83,9 +83,34 @@ const severityRisks = [
   { severity: "Low", count: 15, description: "Action required within a quarter" },
 ];
 
+const generateTrendData = (year: string, quarter: string) => {
+  // Get the months for the selected quarter
+  const quarterMonths = {
+    Q1: ["Jan", "Feb", "Mar"],
+    Q2: ["Apr", "May", "Jun"],
+    Q3: ["Jul", "Aug", "Sep"],
+    Q4: ["Oct", "Nov", "Dec"]
+  }[quarter];
+
+  // Generate data based on the quarterly risks
+  const baseData = quarterlyRisks[year][quarter];
+  return quarterMonths.map((month, index) => ({
+    month,
+    High: baseData.high + Math.floor(Math.random() * 3) - 1, // Add some variation
+    Medium: baseData.medium + Math.floor(Math.random() * 3) - 1,
+    Low: baseData.low + Math.floor(Math.random() * 3) - 1
+  }));
+};
+
 export default function Dashboard() {
   const [selectedYear, setSelectedYear] = useState("2024");
   const [selectedQuarter, setSelectedQuarter] = useState("Q1");
+
+  // Memoize the trend data to prevent unnecessary recalculations
+  const currentTrendData = useMemo(() => 
+    generateTrendData(selectedYear, selectedQuarter),
+    [selectedYear, selectedQuarter]
+  );
 
   return (
     <div className="p-6 bg-background min-h-screen">
@@ -157,11 +182,34 @@ export default function Dashboard() {
         <Card className="shadow-none border border-muted-foreground/10">
           <CardHeader>
             <CardTitle>Risk Trends Over Time</CardTitle>
-            <CardDescription>Number of risks by severity level over the past 6 months</CardDescription>
+            <CardDescription>Number of risks by severity level over the selected quarter</CardDescription>
+            <div className="flex gap-4 mt-4">
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="2024">2024</SelectItem>
+                  <SelectItem value="2023">2023</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedQuarter} onValueChange={setSelectedQuarter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Quarter" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Q1">Q1</SelectItem>
+                  <SelectItem value="Q2">Q2</SelectItem>
+                  <SelectItem value="Q3">Q3</SelectItem>
+                  <SelectItem value="Q4">Q4</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={trendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <LineChart data={currentTrendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis allowDecimals={false} />
